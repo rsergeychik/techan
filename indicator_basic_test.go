@@ -44,3 +44,19 @@ func TestTypicalPriceIndicator_Calculate(t *testing.T) {
 
 	assert.EqualValues(t, "1.2143", typicalPrice.FormattedString(4))
 }
+
+func TestVWAPIndicator_Calculate(t *testing.T) {
+	series := NewTimeSeries()
+
+	candle := NewCandle(TimePeriod{
+		Start: time.Now(),
+		End:   time.Now().Add(time.Minute),
+	})
+	candle.VWAP = big.NewFromString("1.2080")
+
+	series.AddCandle(candle)
+
+	typicalPrice := NewVWAPIndicator(series).Calculate(0)
+
+	assert.EqualValues(t, "1.2080", typicalPrice.FormattedString(4))
+}
