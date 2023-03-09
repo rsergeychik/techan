@@ -2,6 +2,7 @@ package techan
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -17,6 +18,8 @@ func TestCandle_AddTrade(t *testing.T) {
 		End:   now.Add(time.Minute),
 	})
 
+	_, _ = fmt.Fprintf(os.Stderr, "lol candle_test.go:21 11:59:30.550: %+v\n", big.NewDecimal(1).Mul(big.NewDecimal(2)))
+
 	candle.AddTrade(big.NewDecimal(1), big.NewDecimal(2)) // Open
 	candle.AddTrade(big.NewDecimal(1), big.NewDecimal(5)) // High
 	candle.AddTrade(big.NewDecimal(1), big.NewDecimal(1)) // Low
@@ -29,7 +32,7 @@ func TestCandle_AddTrade(t *testing.T) {
 	assert.EqualValues(t, 3, candle.ClosePrice.Float())
 	assert.EqualValues(t, 5, candle.Volume.Float())
 	assert.EqualValues(t, 5, candle.TradeCount)
-	assert.EqualValues(t, 3, candle.VWAP.Float())
+	assert.EqualValues(t, 2.8, candle.VWAP.Float())
 }
 
 func TestCandle_String(t *testing.T) {

@@ -30,6 +30,7 @@ func NewCandle(period TimePeriod) (c *Candle) {
 		MinPrice:   big.ZERO,
 		VWAP:       big.ZERO,
 		Volume:     big.ZERO,
+		totalPrice: big.ZERO,
 	}
 }
 
@@ -59,8 +60,17 @@ func (c *Candle) AddTrade(tradeAmount, tradePrice big.Decimal) {
 		c.Volume = c.Volume.Add(tradeAmount)
 	}
 
-	c.totalPrice = c.totalPrice.Add(tradePrice.Mul(tradeAmount))
-	c.VWAP = c.totalPrice.Div(c.Volume)
+	if c.totalPrice.IsZero() {
+		c.totalPrice = tradePrice.Mul(tradeAmount)
+	} else {
+		c.totalPrice = c.totalPrice.Add(tradePrice.Mul(tradeAmount))
+	}
+
+	if c.VWAP.IsZero() {
+		c.VWAP = tradePrice
+	} else {
+		c.VWAP = c.totalPrice.Div(c.Volume)
+	}
 
 	c.TradeCount++
 }
@@ -74,6 +84,7 @@ Close:	%s
 High:	%s
 Low:	%s
 Volume:	%s
+VWAP:	%s
 	`,
 		c.Period,
 		c.OpenPrice.FormattedString(2),
@@ -81,5 +92,6 @@ Volume:	%s
 		c.MaxPrice.FormattedString(2),
 		c.MinPrice.FormattedString(2),
 		c.Volume.FormattedString(2),
+		c.VWAP.FormattedString(2),
 	))
 }
