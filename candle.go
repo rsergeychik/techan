@@ -15,7 +15,9 @@ type Candle struct {
 	MaxPrice   big.Decimal
 	MinPrice   big.Decimal
 	Volume     big.Decimal
+	VWAP       big.Decimal
 	TradeCount uint
+	totalPrice big.Decimal
 }
 
 // NewCandle returns a new *Candle for a given time period
@@ -26,6 +28,7 @@ func NewCandle(period TimePeriod) (c *Candle) {
 		ClosePrice: big.ZERO,
 		MaxPrice:   big.ZERO,
 		MinPrice:   big.ZERO,
+		VWAP:       big.ZERO,
 		Volume:     big.ZERO,
 	}
 }
@@ -33,28 +36,31 @@ func NewCandle(period TimePeriod) (c *Candle) {
 // AddTrade adds a trade to this candle. It will determine if the current price is higher or lower than the min or max
 // price and increment the tradecount.
 func (c *Candle) AddTrade(tradeAmount, tradePrice big.Decimal) {
-	if c.OpenPrice.Zero() {
+	if c.OpenPrice.IsZero() {
 		c.OpenPrice = tradePrice
 	}
 	c.ClosePrice = tradePrice
 
-	if c.MaxPrice.Zero() {
+	if c.MaxPrice.IsZero() {
 		c.MaxPrice = tradePrice
 	} else if tradePrice.GT(c.MaxPrice) {
 		c.MaxPrice = tradePrice
 	}
 
-	if c.MinPrice.Zero() {
+	if c.MinPrice.IsZero() {
 		c.MinPrice = tradePrice
 	} else if tradePrice.LT(c.MinPrice) {
 		c.MinPrice = tradePrice
 	}
 
-	if c.Volume.Zero() {
+	if c.Volume.IsZero() {
 		c.Volume = tradeAmount
 	} else {
 		c.Volume = c.Volume.Add(tradeAmount)
 	}
+
+	c.totalPrice = c.totalPrice.Add(tradePrice.Mul(tradeAmount))
+	c.VWAP = c.totalPrice.Div(c.Volume)
 
 	c.TradeCount++
 }

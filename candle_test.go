@@ -1,11 +1,10 @@
 package techan
 
 import (
-	"testing"
-	"time"
-
 	"fmt"
 	"strings"
+	"testing"
+	"time"
 
 	"github.com/sdcoffey/big"
 	"github.com/stretchr/testify/assert"
@@ -30,6 +29,7 @@ func TestCandle_AddTrade(t *testing.T) {
 	assert.EqualValues(t, 3, candle.ClosePrice.Float())
 	assert.EqualValues(t, 5, candle.Volume.Float())
 	assert.EqualValues(t, 5, candle.TradeCount)
+	assert.EqualValues(t, 3, candle.VWAP.Float())
 }
 
 func TestCandle_String(t *testing.T) {

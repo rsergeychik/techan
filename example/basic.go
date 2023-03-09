@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"github.com/sdcoffey/big"
-	"github.com/sdcoffey/techan"
+
+	"github.com/rsergeychik/techan"
 )
 
 // BasicEma is an example of how to create a basic Exponential moving average indicator
