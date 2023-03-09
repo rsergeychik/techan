@@ -87,3 +87,18 @@ func (tpi typicalPriceIndicator) Calculate(index int) big.Decimal {
 	numerator := tpi.Candles[index].MaxPrice.Add(tpi.Candles[index].MinPrice).Add(tpi.Candles[index].ClosePrice)
 	return numerator.Div(big.NewFromString("3"))
 }
+
+type vwapIndicator struct {
+	*TimeSeries
+}
+
+// NewVWAPIndicator returns an Indicator which returns the volume weighted average price of a candle for a given index.
+func NewVWAPIndicator(series *TimeSeries) Indicator {
+	return vwapIndicator{
+		series,
+	}
+}
+
+func (opi vwapIndicator) Calculate(index int) big.Decimal {
+	return opi.Candles[index].VWAP
+}
